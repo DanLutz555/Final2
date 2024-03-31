@@ -6,6 +6,7 @@ export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
+
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
     if (data) {
@@ -14,41 +15,43 @@ export default function Contacts({ contacts, changeChat }) {
     }
   }, []);
   
+
   const changeCurrentChat = (index, contact) => {
     setCurrentSelected(index);
     changeChat(contact);
   };
+
   return (
     <>
-      {currentUserImage && currentUserImage && (
+      {currentUserImage && currentUserName && (
         <Container>
           <div className="brand">
             <img src={Logo} alt="logo" />
             <h3>For Game</h3>
           </div>
           <div className="contacts">
-            {contacts.map((contact, index) => {
-              return (
-                <div
-                  key={contact._id}
-                  className={`contact ${
-                    index === currentSelected ? "selected" : ""
-                  }`}
-                  onClick={() => changeCurrentChat(index, contact)}
-                >
-                  <div className="avatar">
-                    <img
-                      src={`data:image/svg+xml;base64,${contact.avatarImage}`}
-                      alt=""
-                    />
-                  </div>
-                  <div className="username">
-                    <h3>{contact.username}</h3>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+  {contacts.map((contact, index) => {
+    return (
+      <div
+        key={contact._id}
+        className={`contact ${index === currentSelected ? "selected" : ""}`}
+        onClick={() => changeCurrentChat(index, contact)}
+      >
+        <div className="avatar">
+          <img
+            src={`data:image/svg+xml;base64,${contact.avatarImage}`}
+            alt="avatar"
+          />
+        </div>
+        <div className="username">
+          <OnlineStatus isOnline={contact.isOnline} />
+          <h3>{contact.username}</h3>
+        </div>
+      </div>
+    );
+  })}
+</div>
+
           <div className="current-user">
             <div className="avatar">
               <img
@@ -65,6 +68,7 @@ export default function Contacts({ contacts, changeChat }) {
     </>
   );
 }
+
 const Container = styled.div`
   display: grid;
   grid-template-rows: 10% 75% 15%;
@@ -117,13 +121,19 @@ const Container = styled.div`
         h3 {
           color: white;
         }
+        span {
+          margin-left: 10px;
+          padding: 5px;
+          border-radius: 10px;
+          color: white;
+          font-weight: bold;
+        }
       }
     }
     .selected {
       background-color: #9a86f3;
     }
   }
-
   .current-user {
     background-color: #0d0d30;
     display: flex;
@@ -141,13 +151,15 @@ const Container = styled.div`
         color: white;
       }
     }
-    @media screen and (min-width: 720px) and (max-width: 1080px) {
-      gap: 0.5rem;
-      .username {
-        h2 {
-          font-size: 1rem;
-        }
-      }
-    }
   }
 `;
+
+const OnlineStatus = styled.span`
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 10px;
+  background-color: ${(props) => (props.isOnline ? '#4BB543' : '#FF0000')};
+`;
+

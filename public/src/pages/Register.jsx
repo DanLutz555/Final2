@@ -28,7 +28,7 @@ export default function Register() {
     navigate("/");
       console.log("navigate");
     }
-  }, []);
+  }, [navigate]);
 
   const handleChange = (event) => {
     setValues({ ...values, [event.target.name]: event.target.value });
